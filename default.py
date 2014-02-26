@@ -10,7 +10,7 @@ pandoc and other preprocessors out there.
 from lexor import init, load_aux
 
 INFO = init(
-    version=(0, 0, 1, 'rc', 0),
+    version=(0, 0, 1, 'rc', 1),
     lang='lexor',
     type='writer',
     description='Writes files in the lexor format.',
@@ -24,39 +24,45 @@ DEFAULTS = {
     'width': '70',
     'add_block': '',
     'del_block': '',
-    'header': 'setext'
+    'header': 'setext',
+    'hashheader': 'closed',
 }
-MOD = load_aux(INFO)['nw']
+MOD = load_aux(INFO)
 MAPPING = {
-    'li': MOD.ListItemNW,
-    'h1': MOD.HeaderNW,
-    'hr': MOD.HRuleNW,
-    'a': MOD.AnchorNW,
-    'i': MOD.EmNW,
-    'em': MOD.EmNW,
-    'strong': MOD.StrongNW,
-    'p': MOD.ParagraphNW,
-    '#document': MOD.DocumentNW,
-    '#text': MOD.TextNW,
-    '#entity': MOD.EntityNW,
-    '#comment': MOD.CommentNW,
-    '#doctype': MOD.DoctypeNW,
-    '#cdata-section': MOD.CDataNW,
-    '__default__': MOD.DefaultNW,
+    'ul': MOD['list'].ListNW,
+    'ol': 'ul',
+    'li': MOD['list'].ListItemNW,
+    'a': MOD['nw'].AnchorNW,
+    'em': MOD['inline'].EmNW,
+    'i': 'em',
+    'strong': MOD['inline'].StrongNW,
+    'hr': MOD['nw'].HRuleNW,
+    'h1': MOD['header'].HeaderNW,
+    'p': MOD['paragraph'].ParagraphNW,
+    '#document': MOD['nw'].DocumentNW,
+    '#text': MOD['nw'].TextNW,
+    '#entity': MOD['nw'].EntityNW,
+    '#comment': MOD['nw'].CommentNW,
+    '#doctype': MOD['nw'].DoctypeNW,
+    '#cdata-section': MOD['nw'].CDataNW,
+    '__default__': MOD['nw'].DefaultNW,
 }
 for item in ['h2', 'h3', 'h4', 'h5', 'h6']:
     MAPPING[item] = 'h1'
 
 def pre_process(writer, _):
     """Sets the default width for the writer. """
+    writer.disable_raw()
+    writer.enable_wrap()
     writer.header = writer.defaults['header']
     writer.width = int(writer.defaults['width'])
     writer.pre_node = 0
+    writer.list_level = 0
     for name in writer.defaults['add_block'].split(','):
-        if name and name not in MOD.BLOCK:
-            MOD.BLOCK.append(name)
+        if name and name not in MOD['nw'].BLOCK:
+            MOD['nw'].BLOCK.append(name)
     for name in writer.defaults['del_block'].split(','):
         try:
-            MOD.BLOCK.remove(name)
+            MOD['nw'].BLOCK.remove(name)
         except ValueError:
             pass

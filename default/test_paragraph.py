@@ -1,4 +1,4 @@
-"""LEXOR: DEFAULT writer NW test
+"""LEXOR: DEFAULT writer PARAGRAPH test
 
 Testing suite to write LEXOR in the DEFAULT style.
 
@@ -15,7 +15,7 @@ EXPECTED = """
 
 
 def test_default():
-    """lexor.writer.default.nw """
+    """lexor.writer.default.paragraph """
     doc, _ = lexor.parse(DOCUMENT, 'html')
     doc.style = 'default'
     #compare_with(str(doc), EXPECTED)
