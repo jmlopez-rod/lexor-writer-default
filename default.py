@@ -10,7 +10,7 @@ pandoc and other preprocessors out there.
 from lexor import init, load_aux
 
 INFO = init(
-    version=(0, 0, 1, 'rc', 1),
+    version=(0, 0, 1, 'rc', 2),
     lang='lexor',
     type='writer',
     description='Writes files in the lexor format.',
@@ -29,6 +29,7 @@ DEFAULTS = {
 }
 MOD = load_aux(INFO)
 MAPPING = {
+    'list_item': MOD['list'].LexorListItemNW,
     'ul': MOD['list'].ListNW,
     'ol': 'ul',
     'li': MOD['list'].ListItemNW,

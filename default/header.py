@@ -15,6 +15,7 @@ NW = load_rel(__file__, 'nw')
 class HeaderNW(NodeWriter):
     """Writes a header element. """
     wrap_enabled = None
+    indent = None
 
     def start(self, node):
         self.wrap_enabled = self.writer.wrap_enabled()
@@ -22,6 +23,9 @@ class HeaderNW(NodeWriter):
             self.writer.disable_wrap()
         self.writer.endl(False)
         self.writer.endl()
+        if self.writer.indent:
+            self.indent = self.writer.indent
+            self.writer.indent = ''
         level = int(node.name[1])
         if self.writer.header == 'setext' and level < 3:
             pass
@@ -53,3 +57,5 @@ class HeaderNW(NodeWriter):
         self.write('\n\n')
         if self.wrap_enabled:
             self.writer.enable_wrap()
+        if self.indent:
+            self.writer.indent = self.indent

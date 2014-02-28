@@ -14,10 +14,11 @@ class ParagraphNW(NodeWriter):
     """Write a paragraph. """
 
     def start(self, node):
-        self.writer.flush_buffer(False)
-        if node.parent.name in ['li'] and node.element_index == 0:
-            pass
-        else:
+        if 'remove' in node:
+            return
+        self.writer.flush_buffer(tail=False)
+        if (node.parent.name not in ['li', 'list_item'] or
+                node.element_index != 0):
             if self.writer.pos[1] != 1:
                 self.writer.endl(tot=2)
             elif not self.writer.last().endswith('\n\n'):
@@ -30,6 +31,8 @@ class ParagraphNW(NodeWriter):
             self.write('}')
 
     def end(self, node):
+        if 'remove' in node:
+            return
         if node.attlen > 0:
             self.write('%%')
         self.writer.flush_buffer(False)

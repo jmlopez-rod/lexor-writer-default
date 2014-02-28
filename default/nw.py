@@ -89,7 +89,16 @@ class EntityNW(NodeWriter):
             self.mapping['&#%d;' % i] = chr(i)
 
     def data(self, node):
-        self.write(self.mapping[node.data])
+        try:
+            data = self.mapping[node.data]
+        except KeyError:
+            if node.data == '\\backslash':
+                data = '\\'
+            elif node.data[0] == '\\':
+                data = node.data[1:]
+            else:
+                data = node.data
+        self.write(data)
 
 
 class DefaultNW(NodeWriter):
@@ -254,12 +263,17 @@ class AnchorNW(NodeWriter):
 
     def end(self, node):
         self.write(']')
+        exclude = []
+        if 'href' in node:
+            href = node['href']
+            exclude.append('href')
+        else:
+            href = ''
         if 'title' in node:
             title = ' "%s"' % node['title']
-            exclude = ['href', 'title']
+            exclude.append('title')
         else:
             title = ''
-            exclude = ['href']
-        self.write('(%s%s)' % (node['href'], title), split=True)
+        self.write('(%s%s)' % (href, title), split=True)
         if node.attlen - len(exclude) > 0:
             self.write('{%s}' % format_attributes(node, exclude))

@@ -93,3 +93,25 @@ class ListItemNW(NodeWriter):
 
     def end(self, _):
         self.writer.endl(False, tail=False)
+
+
+class LexorListItemNW(NodeWriter):
+    """Display Lexor list items. """
+
+    def start(self, node):
+        self.writer.endl(False, tail=False)
+        char = '*'
+        if node['type'] == 'ol':
+            char = '+'
+        self.writer.indent = ''
+        indent_level = node['level'] + 1
+        if 'flag' in node and node['flag'] == 'close':
+            self.write('^')
+            indent_level -= 1
+        self.write(char*node['level']+' ')
+        self.writer.flush_buffer(tail=True)
+        self.writer.indent = ' '*indent_level
+
+    def end(self, node):
+        if node.next is None:
+            self.writer.indent = ''
