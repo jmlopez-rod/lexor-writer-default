@@ -10,7 +10,7 @@ pandoc and other preprocessors out there.
 from lexor import init, load_aux
 
 INFO = init(
-    version=(0, 0, 1, 'rc', 2),
+    version=(0, 0, 1, 'rc', 3),
     lang='lexor',
     type='writer',
     description='Writes files in the lexor format.',

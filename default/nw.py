@@ -53,11 +53,15 @@ class TextNW(NodeWriter):
             self.write(node.data)
             return
         text = re.sub(RE, ' ', node.data)
-        if text != ' ' or (node.index != 0 and
-                           node.prev.name not in BLOCK and
-                           node.next is not None and
-                           node.next.name not in BLOCK):
+        if text != ' ':
             self.write(text)
+        else:
+            char = self.writer.last()[-1]
+            if char not in ' \n' and (node.index != 0 and
+                                      node.prev.name not in BLOCK and
+                                      node.next is not None and
+                                      node.next.name not in BLOCK):
+                self.write(text)
 
 
 class EntityNW(NodeWriter):
